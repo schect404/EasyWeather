@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+                name="item"
+                type="com.atitto.domain.cities.model.City"/>
+    </data>
+
+    <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:isMy="@{item.isMy}"
+            android:paddingStart="@dimen/standartPadding"
+            android:paddingEnd="@dimen/standartPadding"
+            android:paddingTop="@dimen/standartMargin"
+            android:paddingBottom="@dimen/standartMargin">
+
+        <TextView
+                android:id="@+id/tvCity"
+                android:ellipsize="end"
+                android:text="@{item.name}"
+                android:layout_marginTop="@dimen/standartMargin"
+                android:textAppearance="@style/TextAccentAppearenceMiddle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/tvTemperature"
+                android:layout_marginTop="@dimen/standartMargin"
+                android:textAppearance="@style/TextLabelAppearenceMiddle"
+                android:text="@{item.temperature}"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+</layout>
