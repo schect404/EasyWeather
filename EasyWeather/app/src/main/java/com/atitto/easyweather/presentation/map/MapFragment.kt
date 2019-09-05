@@ -51,11 +51,13 @@ class MapFragment : Fragment() {
 
             cities.forEach { city ->
                 city.coords?.let {
-                    myMap.addMarker(
-                        MarkerOptions()
-                            .position(LatLng(it.lat, it.long))
-                            .title("${city.name} -- ${city.temperature}")
-                    ).showInfoWindow()
+
+                    val options = MarkerOptions()
+                        .position(LatLng(it.lat, it.long))
+                        .title("${city.name} -- ${city.temperature}")
+
+                    val marker = myMap.addMarker(options)
+                    if (city.name == currentCity?.name) marker.showInfoWindow()
                 }
 
             }
