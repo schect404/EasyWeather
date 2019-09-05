@@ -82,4 +82,9 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
         compositeDisposable.makeAction(citiesUseCase.updateCity(city), errorLiveData) {}
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
+    }
+
 }
