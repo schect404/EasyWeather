@@ -25,7 +25,17 @@
                 android:layout_marginTop="@dimen/standartMargin"
                 android:textAppearance="@style/TextAccentAppearenceMiddle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/ivIcon"/>
+
+        <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                app:icon="@{item.iconUrl}"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/tvTemperature"/>
 
         <TextView
                 android:id="@+id/tvTemperature"

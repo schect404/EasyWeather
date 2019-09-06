@@ -8,7 +8,8 @@ data class City (
    val name: String,
    val temperature: String? = null,
    val isMy: Boolean = false,
-   val coords: Coords? = null
+   val coords: Coords? = null,
+   val iconUrl: String? = null
 ): Parcelable
 
 @Parcelize

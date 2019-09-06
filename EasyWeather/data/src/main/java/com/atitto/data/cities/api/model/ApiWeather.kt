@@ -11,7 +11,9 @@ data class ApiWeatherList(
     @SerializedName("main")
     val main: ApiWeatherMain,
     @SerializedName("coord")
-    val coords: ApiCoords
+    val coords: ApiCoords,
+    @SerializedName("weather")
+    val weather: List<ApiWeatherBlock>
 )
 
 data class ApiWeatherMain(
@@ -24,5 +26,10 @@ data class ApiCoords(
     val latitude: Double,
     @SerializedName("lon")
     val longtitude: Double
+)
+
+data class ApiWeatherBlock(
+    @SerializedName("icon")
+    val icon: String
 )
 

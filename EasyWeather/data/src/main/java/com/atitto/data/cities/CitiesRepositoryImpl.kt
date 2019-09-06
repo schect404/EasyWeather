@@ -22,7 +22,8 @@ class CitiesRepositoryImpl(private val defaultProvider: DefaultCitiesProvider,
 
     override fun getWeather(city: City): Single<City> = citiesApi.getCityWeather(city.name).map {
         city.copy(temperature = "${it.list.first().main.temperature.roundToInt()}°C",
-            coords = Coords(lat = it.list.first().coords.latitude, long = it.list.first().coords.longtitude))
+            coords = Coords(lat = it.list.first().coords.latitude, long = it.list.first().coords.longtitude),
+            iconUrl = ICON_URL_PATTERN.format(it.list.first().weather.first().icon))
     }
 
     override fun getDefaultCities(): List<City> = defaultProvider.getCities().map { City(name = it) }
@@ -45,6 +46,10 @@ class CitiesRepositoryImpl(private val defaultProvider: DefaultCitiesProvider,
         } catch (e: Exception) {
             Completable.error(e)
         }
+    }
+
+    companion object {
+        private const val ICON_URL_PATTERN = "http://openweathermap.org/img/w/%s.png"
     }
 
 }

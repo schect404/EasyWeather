@@ -62,7 +62,7 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
     private fun getWeatherInCities(citiesList: List<City>) {
         citiesList.forEach { city ->
             compositeDisposable.makeAction(citiesUseCase.getWeather(city), { errorLiveData.postValue("Could not load weather for ${city.name}") }) {
-                val newCity = city.copy(temperature = it.temperature, coords = it.coords)
+                val newCity = city.copy(temperature = it.temperature, coords = it.coords, iconUrl = it.iconUrl)
                 updatedCity.value = newCity
                 updateCity(newCity)
             }

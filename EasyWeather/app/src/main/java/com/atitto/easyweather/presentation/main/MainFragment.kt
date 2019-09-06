@@ -43,7 +43,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        knowLocation(view.context)
+        if(state.get() == null) knowLocation(view.context)
         setupList()
         setupFAB()
         checkState()
