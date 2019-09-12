@@ -20,9 +20,6 @@ import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
 
-
-
-
 private const val CITIES_ARGS = "CITIES"
 private const val CURRENT_CITY_ARGS = "CURRENT_CITY"
 
@@ -66,7 +63,6 @@ class MapFragment : Fragment() {
 
         cities.forEach { city ->
             city.coords?.let {
-
                 val options = MarkerOptions()
                     .position(LatLng(it.lat, it.long))
                     .title("${city.name} -- ${city.temperature}")

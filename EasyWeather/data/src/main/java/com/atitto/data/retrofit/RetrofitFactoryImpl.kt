@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactoryImpl : RetrofitFactory {
 
-    override fun createRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
+    override fun createRetrofit(okHttpClient: OkHttpClient, gson: Gson, variants: RetrofitVariants): Retrofit {
         val okHttpBuilder =
             okHttpClient.newBuilder()
 
@@ -18,8 +18,10 @@ class RetrofitFactoryImpl : RetrofitFactory {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         okHttpBuilder.addInterceptor(loggingInterceptor)
 
+        val baseUrl = if(variants == RetrofitVariants.CITIES) BuildConfig.BASE_URL_CITIES else BuildConfig.BASE_URL_WEATHER
+
         val builder = Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(baseUrl)
             .client(okHttpBuilder.build())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

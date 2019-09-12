@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <variable
@@ -9,42 +10,57 @@
     </data>
 
     <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:isMy="@{item.isMy}"
-            android:paddingStart="@dimen/standartPadding"
-            android:paddingEnd="@dimen/standartPadding"
-            android:paddingTop="@dimen/standartMargin"
-            android:paddingBottom="@dimen/standartMargin">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-                android:id="@+id/tvCity"
-                android:ellipsize="end"
-                android:text="@{item.name}"
-                android:layout_marginTop="@dimen/standartMargin"
-                android:textAppearance="@style/TextAccentAppearenceMiddle"
+        <RelativeLayout
+                android:id="@+id/vMain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@id/ivIcon"/>
+                app:isMy="@{item.isMy}"
+                android:paddingStart="@dimen/standartPadding"
+                android:paddingEnd="@dimen/standartPadding"
+                android:paddingTop="@dimen/standartMargin"
+                android:paddingBottom="@dimen/standartMargin">
 
-        <ImageView
-                android:id="@+id/ivIcon"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                app:icon="@{item.iconUrl}"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/tvTemperature"/>
+            <TextView
+                    android:id="@+id/tvCity"
+                    android:ellipsize="end"
+                    android:text="@{item.name}"
+                    android:layout_marginTop="@dimen/standartMargin"
+                    android:textAppearance="@style/TextAccentAppearenceMiddle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/ivIcon"/>
 
-        <TextView
-                android:id="@+id/tvTemperature"
-                android:layout_marginTop="@dimen/standartMargin"
-                android:textAppearance="@style/TextLabelAppearenceMiddle"
-                android:text="@{item.temperature}"
-                android:layout_alignParentEnd="true"
-                android:layout_width="wrap_content"
+            <ImageView
+                    android:id="@+id/ivIcon"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    app:icon="@{item.iconUrl}"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/tvTemperature"/>
+
+            <TextView
+                    android:id="@+id/tvTemperature"
+                    android:layout_marginTop="@dimen/standartMargin"
+                    android:textAppearance="@style/TextLabelAppearenceMiddle"
+                    android:text="@{item.temperature}"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <com.atitto.easyweather.presentation.main.widget.WeatherDetailsView
+                android:id="@+id/vWeatherDetails"
+                app:details="@{item.details}"
+                app:visible="@{item.shouldDetailsBeSeen}"
+                android:layout_below="@id/vMain"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
     </RelativeLayout>
+
 </layout>

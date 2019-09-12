@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+                name="item"
+                type="com.atitto.domain.cities.model.SearchCity"/>
+    </data>
+
+        <RelativeLayout
+                android:id="@+id/vMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/standartPadding"
+                android:paddingEnd="@dimen/standartPadding"
+                android:paddingTop="@dimen/standartMargin"
+                android:paddingBottom="@dimen/standartMargin">
+
+            <TextView
+                    android:id="@+id/tvCity"
+                    android:ellipsize="end"
+                    android:text="@{item.name}"
+                    android:layout_marginTop="@dimen/standartMargin"
+                    android:textAppearance="@style/TextAccentAppearenceMiddle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/ivIcon"/>
+
+        </RelativeLayout>
+
+</layout>

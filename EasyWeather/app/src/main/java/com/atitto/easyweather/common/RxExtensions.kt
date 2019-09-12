@@ -3,11 +3,12 @@ package com.atitto.easyweather.common
 import android.arch.lifecycle.MutableLiveData
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.NoSuchElementException
+import java.util.*
 
 fun CompositeDisposable.makeAction(action: Completable, errorLiveData: MutableLiveData<String>, postExecute: () -> Unit) {
     add(
@@ -31,6 +32,19 @@ fun <T> CompositeDisposable.makeAction(action: Flowable<T>, errorLiveData: Mutab
                 postExecute.invoke(it)
             }, {
                 errorLiveData.postValue(it.message)
+            })
+    )
+}
+
+fun <T> CompositeDisposable.makeAction(action: Observable<T>, errorExecute: (Throwable) -> Unit, postExecute: (T) -> Unit) {
+    add(
+        action
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                postExecute.invoke(it)
+            }, {
+                errorExecute.invoke(it)
             })
     )
 }

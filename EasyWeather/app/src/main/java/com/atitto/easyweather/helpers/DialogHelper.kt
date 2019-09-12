@@ -6,44 +6,42 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import com.atitto.domain.cities.model.City
 import com.atitto.easyweather.R
+import android.widget.Toast
+import com.atitto.domain.cities.CitiesUseCase
+import com.atitto.easyweather.presentation.main.widget.addcity.AddCityView
 
 object DialogHelper {
 
     fun showErrorAlert(context: Context, error: String) {
-        AlertDialog.Builder(context)
-            .setTitle("Error")
-            .setMessage(error)
-            .setPositiveButton(android.R.string.ok, null)
-            .show()
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
-    fun showCreateCategoryDialog(context: Context, layoutInflater: LayoutInflater, cities: List<City>, listener: (String) -> Unit ) {
+    fun showAddCityDialog(context: Context, layoutInflater: LayoutInflater, cities: List<City>, useCase: CitiesUseCase, listener: (String) -> Unit ) {
 
-        val view = layoutInflater.inflate(R.layout.layout_new_city, null)
-        val etCity = view.findViewById(R.id.etCity) as EditText
+        val view = layoutInflater.inflate(R.layout.dialog_add_city, null) as? AddCityView
+
+        view?.attachUseCase(useCase)
+
+        val etCity = view?.findViewById(R.id.etCity) as? EditText
 
         val dialog = AlertDialog
             .Builder(context)
             .setTitle("New City")
             .setView(view)
-            .setPositiveButton(android.R.string.ok, null)
             .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.cancel() }
+            .setOnDismissListener { view?.dispose() }
             .create()
 
         dialog.setOnShowListener {
-            val okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            okButton.setOnClickListener {
-                val newCity = etCity.text.toString()
-
+            view?.onCityClicked = {
                 when {
-                    (cities.firstOrNull { it.name.toLowerCase() == newCity }) != null -> etCity.error = "This city already presents"
-                    newCity.isEmpty() -> etCity.error = "Incorrect"
+                    (cities.firstOrNull { cities -> cities.name == it }) != null -> etCity?.error = "This city already presents"
+                    it.isEmpty() -> etCity?.error = "Incorrect"
                     else -> {
-                        listener.invoke(newCity.capitalize())
+                        listener.invoke(it.capitalize())
                         dialog.dismiss()
                     }
                 }
-
             }
         }
 

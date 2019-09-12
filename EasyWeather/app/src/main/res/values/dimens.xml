@@ -2,6 +2,7 @@
 <resources>
     <dimen name="standartPadding">16dp</dimen>
     <dimen name="standartMargin">6dp</dimen>
+    <dimen name="smallMargin">3dp</dimen>
     <dimen name="textSmallSize">14sp</dimen>
     <dimen name="textMiddleSize">22sp</dimen>
 </resources>

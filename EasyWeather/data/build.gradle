@@ -17,7 +17,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "API_KEY", '"b7e3ab34f225f849bf5abf21bb0aad94"'
-        buildConfigField "String", "BASE_URL", '"http://api.openweathermap.org/"'
+        buildConfigField "String", "CITIES_API_KEY", '"56272388b4msh3d4429db9b934b0p12c004jsn58e4cdcb162a"'
+        buildConfigField "String", "BASE_URL_WEATHER", '"http://api.openweathermap.org/"'
+        buildConfigField "String", "BASE_URL_CITIES", '"https://wft-geo-db.p.mashape.com/"'
     }
 
     buildTypes {

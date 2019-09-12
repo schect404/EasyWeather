@@ -6,6 +6,11 @@ import retrofit2.Retrofit
 
 interface RetrofitFactory {
 
-    fun createRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit
+    fun createRetrofit(okHttpClient: OkHttpClient, gson: Gson, variant: RetrofitVariants): Retrofit
 
+}
+
+enum class RetrofitVariants {
+    WEATHER,
+    CITIES
 }

@@ -1,16 +1,9 @@
 package com.atitto.easyweather.presentation.main
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
-import android.databinding.ObservableArrayList
-import android.databinding.ObservableList
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.atitto.domain.cities.model.City
 import com.atitto.easyweather.BR
 import com.atitto.easyweather.R
@@ -21,21 +14,24 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.get
 import java.util.concurrent.atomic.AtomicReference
 import android.location.*
-import com.atitto.easyweather.MainActivity
+import android.view.*
 import com.atitto.easyweather.databinding.ItemCityBinding
-
+import android.view.MenuInflater
+import com.atitto.easyweather.MainActivity
 
 class MainFragment : Fragment() {
 
-    private val items: ObservableList<City> = ObservableArrayList()
+    private val items: AsyncObservableList<City> = AsyncObservableList()
 
     private val adapter = LastAdapter(items, BR.item).map<City, ItemCityBinding>(R.layout.item_city) { onClick {
-        it.binding.item?.let { city -> city.coords?.let { (activity as? MainActivity)?.goToMap(city, items) } }
+        it.binding.item?.let { city -> viewModel.showDetails(city) }
     } }
 
     private val state = AtomicReference<List<City>>()
 
     private val viewModel: MainViewModel = get()
+
+    private val permissionManager: PermissionManager = get()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -43,11 +39,11 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(state.get() == null) knowLocation(view.context)
+        setHasOptionsMenu(true)
         setupList()
-        setupFAB()
         checkState()
         bindViewModel()
+        if(state.get() == null) knowLocation()
     }
 
     private fun checkState() {
@@ -60,49 +56,51 @@ class MainFragment : Fragment() {
     }
 
     private fun setupList() {
-        rvCities.decorate()
         rvCities.attachAdapter(adapter)
+        rvCities.scheduleLayoutAnimation()
     }
 
     private fun bindViewModel() {
-        bindDataTo(viewModel.cities, items::loaded)
+        bindDataTo(viewModel.cities) { items.update(it) }
         bindDataTo(viewModel.errorLiveData) { error -> context?.let { DialogHelper.showErrorAlert(it, error) } }
-        bindDataTo(viewModel.updatedCity, items::update)
     }
 
-    private fun setupFAB() {
-        fab.setOnClickListener {
-            DialogHelper.showCreateCategoryDialog(it.context, layoutInflater, items) {
-                viewModel.addCity(it, items)
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        super.onOptionsItemSelected(item)
+        when(item?.itemId) {
+            R.id.action_add -> context?.let { DialogHelper.showAddCityDialog(it, layoutInflater, items, get()) { viewModel.addCity(it, items) } }
+            R.id.action_map -> {
+                val myCity = items.firstOrNull { it.isMy }
+                (activity as? MainActivity)?.goToMap(myCity, items)
             }
+            else -> {}
         }
+        return true
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        context?.let {
-            if (Build.VERSION.SDK_INT >= 23 ||
-                ContextCompat.checkSelfPermission(it, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-                val provider = locationManager?.getBestProvider(Criteria(), false)
-                val location = provider?.let { locationManager.getLastKnownLocation(it) }
-                viewModel.initCities(location)
-            } else {
-                viewModel.initCities(null)
-            }
+        if(permissionManager.isLocationPermissionGranted()) {
+            initCities()
+        } else {
+            viewModel.initCities(null)
         }
     }
 
-    private fun knowLocation(context: Context) {
-        if (Build.VERSION.SDK_INT >= 23 &&
-            ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), 0)
-        } else {
-            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-            val provider = locationManager?.getBestProvider(Criteria(), false)
-            val location = provider?.let { locationManager.getLastKnownLocation(it) }
-            viewModel.initCities(location)
-        }
+    private fun knowLocation() =
+        if (permissionManager.isLocationPermissionGranted()) permissionManager.requestPermission(this) else initCities()
+
+    @SuppressLint("MissingPermission")
+    private fun initCities() {
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        val provider = locationManager?.getBestProvider(Criteria(), false)
+        val location = provider?.let { locationManager.getLastKnownLocation(it) }
+        viewModel.initCities(location)
     }
 
     companion object {

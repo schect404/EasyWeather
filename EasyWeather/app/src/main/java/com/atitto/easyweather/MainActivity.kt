@@ -24,16 +24,16 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         shouldDisplayHomeUp()
     }
 
-    fun goToMap(currentCity: City, cities: List<City>) {
+    fun goToMap(currentCity: City?, cities: List<City>) {
         val fragment = MapFragment.newInstance()
-        val args = Bundle()
-        args.putParcelableArrayList(CITIES_ARGS, ArrayList(cities))
-        args.putParcelable(CURRENT_CITY_ARGS, currentCity)
-        fragment.arguments = args
-        val tr = supportFragmentManager.beginTransaction()
-        tr.replace(R.id.vParent, fragment)
-        tr.addToBackStack(null)
-        tr.commit()
+        Bundle().apply {
+            putParcelableArrayList(CITIES_ARGS, ArrayList(cities))
+            putParcelable(CURRENT_CITY_ARGS, currentCity)
+        }.also { fragment.arguments = it }
+        supportFragmentManager.beginTransaction()
+        .replace(R.id.vParent, fragment)
+        .addToBackStack(null)
+        .commit()
     }
 
     override fun onBackStackChanged() {

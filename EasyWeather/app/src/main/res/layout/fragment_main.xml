@@ -8,18 +8,9 @@
 
     <android.support.v7.widget.RecyclerView
             android:id="@+id/rvCities"
+            android:layoutAnimation="@anim/layout_animation_slide_right"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
-
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_add"
-            android:background="@drawable/fab_shape"
-            android:layout_margin="16dp" />
 
 </RelativeLayout>

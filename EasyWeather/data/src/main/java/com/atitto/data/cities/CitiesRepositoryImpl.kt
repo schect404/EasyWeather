@@ -1,55 +1,56 @@
 package com.atitto.data.cities
 
 import android.location.Location
-import com.atitto.data.cities.api.CitiesApi
+import com.atitto.data.cities.api.WeatherApi
+import com.atitto.data.cities.api.model.toWeatherDetails
+import com.atitto.data.cities.api.model.updateCity
 import com.atitto.data.cities.db.CitiesDAO
-import com.atitto.data.cities.db.CityDB
+import com.atitto.data.cities.db.toCity
+import com.atitto.data.cities.db.toDBCity
 import com.atitto.data.cities.default.DefaultCitiesProvider
+import com.atitto.data.cities.search.SearchCitiesApi
+import com.atitto.data.cities.search.model.toSearchCities
 import com.atitto.data.location.LocationProvider
 import com.atitto.domain.cities.CitiesRepository
 import com.atitto.domain.cities.model.City
-import com.atitto.domain.cities.model.Coords
+import com.atitto.domain.cities.model.SearchCity
+import com.atitto.domain.cities.model.WeatherDetails
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlin.math.roundToInt
 
 class CitiesRepositoryImpl(private val defaultProvider: DefaultCitiesProvider,
                            private val dao: CitiesDAO,
-                           private val citiesApi: CitiesApi,
+                           private val weatherApi: WeatherApi,
+                           private val citiesApi: SearchCitiesApi,
                            private val locationProvider: LocationProvider): CitiesRepository {
+
+    override fun getWeatherDetails(city: City): Single<List<WeatherDetails>> = weatherApi.getWeatherDetails(city.name).map { it.toWeatherDetails() }
 
     override fun getLocation(location: Location): Single<String?> = locationProvider.getCurrentCityLocation(location)
 
-    override fun getWeather(city: City): Single<City> = citiesApi.getCityWeather(city.name).map {
-        city.copy(temperature = "${it.list.first().main.temperature.roundToInt()}°C",
-            coords = Coords(lat = it.list.first().coords.latitude, long = it.list.first().coords.longtitude),
-            iconUrl = ICON_URL_PATTERN.format(it.list.first().weather.first().icon))
-    }
+    override fun getWeather(city: City): Single<City> = weatherApi.getCityWeather(city.name).map { it.updateCity(city) }
 
     override fun getDefaultCities(): List<City> = defaultProvider.getCities().map { City(name = it) }
 
     override fun updateDBCity(city: City): Completable {
         return try {
-            dao.updateCity(CityDB(name = city.name, temperature = city.temperature))
+            dao.updateCity(city.toDBCity())
             Completable.complete()
         } catch (e: Exception) {
             Completable.error(e)
         }
     }
 
-    override fun getDBCities(): Single<List<City>> = dao.getAllCities().map { it.map { City(name = it.name, temperature = it.temperature) } }
+    override fun getDBCities(): Single<List<City>> = dao.getAllCities().map { it.map { it.toCity() } }
 
     override fun insertCitiesToDB(cities: List<City>): Completable {
         return try {
-            dao.insertAll(cities.map { CityDB(name = it.name, temperature = it.temperature) })
+            dao.insertAll(cities.map { it.toDBCity() })
             Completable.complete()
         } catch (e: Exception) {
             Completable.error(e)
         }
     }
 
-    companion object {
-        private const val ICON_URL_PATTERN = "http://openweathermap.org/img/w/%s.png"
-    }
-
+    override fun getCities(prefix: String?): Single<List<SearchCity>> = citiesApi.getCities(prefix).map { it.toSearchCities() }
 }

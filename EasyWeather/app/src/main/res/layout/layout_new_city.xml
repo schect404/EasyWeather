@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:padding="@dimen/standartPadding"
         android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
+            android:id="@+id/vInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -18,4 +20,13 @@
 
     </android.support.design.widget.TextInputLayout>
 
-</LinearLayout>
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvNewCities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standartMargin"
+            android:layout_below="@id/vInput"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            android:layoutAnimation="@anim/layout_animation_slide_right"/>
+
+</RelativeLayout>

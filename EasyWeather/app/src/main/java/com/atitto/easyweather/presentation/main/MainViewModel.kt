@@ -4,9 +4,11 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.location.Location
+import android.os.Parcelable
 import com.atitto.domain.cities.CitiesRepository
 import com.atitto.domain.cities.CitiesUseCase
 import com.atitto.domain.cities.model.City
+import com.atitto.domain.cities.model.WeatherDetails
 import com.atitto.easyweather.common.makeAction
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -16,9 +18,11 @@ interface MainViewModel {
 
     val cities: LiveData<List<City>>
     val errorLiveData: LiveData<String>
-    val updatedCity: LiveData<City>
 
     fun initCities(location: Location?)
+    fun getWeatherDetails(city: City)
+    fun showDetails(city: City)
+    fun update(city: City)
     fun addCity(city: String, currentCities: List<City>)
 }
 
@@ -28,7 +32,7 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
 
     override val errorLiveData: MutableLiveData<String> = MutableLiveData()
 
-    override val updatedCity: MutableLiveData<City> = MutableLiveData()
+    private val weatherDetails: HashMap<String, List<WeatherDetails>> = HashMap()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -63,8 +67,9 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
         citiesList.forEach { city ->
             compositeDisposable.makeAction(citiesUseCase.getWeather(city), { errorLiveData.postValue("Could not load weather for ${city.name}") }) {
                 val newCity = city.copy(temperature = it.temperature, coords = it.coords, iconUrl = it.iconUrl)
-                updatedCity.value = newCity
+                update(newCity)
                 updateCity(newCity)
+                getWeatherDetails(newCity)
             }
         }
     }
@@ -78,13 +83,34 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
         getWeatherInCities(listOf(newCity))
     }
 
+    override fun showDetails(city: City) {
+        val details = weatherDetails[city.name] ?: return
+        update(city.copy(details = details, shouldDetailsBeSeen = !city.shouldDetailsBeSeen))
+    }
+
     private fun updateCity(city: City) {
         compositeDisposable.makeAction(citiesUseCase.updateCity(city), errorLiveData) {}
+    }
+
+    override fun getWeatherDetails(city: City) {
+        compositeDisposable.makeAction(citiesUseCase.getWeatherDetails(city), { errorLiveData.postValue("Could not load weather for ${city.name}") }) {
+            val newCity = city.copy(details = it)
+            newCity.details?.let { weatherDetails[city.name] = it }
+        }
+    }
+
+    override fun update(city: City) {
+        val data = cities.value ?: return
+        cities.value = data.replace(city) { (it.name == city.name).and(it.isChanged(city)) }
     }
 
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+    }
+
+    private fun <T: Parcelable> List<T>.replace(newValue: T, block: (T) -> Boolean): List<T> {
+        return map { if (block(it)) newValue else it }
     }
 
 }
