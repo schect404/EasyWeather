@@ -16,11 +16,13 @@ interface PermissionManager {
 class PermissionManagerImpl(private val context: Context): PermissionManager {
 
     override fun requestPermission(fragment: Fragment) {
-        fragment.requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), 0)
+        fragment.requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION), 0)
     }
 
     override fun isLocationPermissionGranted()=
-        (Build.VERSION.SDK_INT >= 23).or(ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        (Build.VERSION.SDK_INT >= 23)
+            .or((ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                .and((ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)))
 
 
 }

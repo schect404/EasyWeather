@@ -13,11 +13,11 @@ import com.github.nitrico.lastadapter.LastAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.get
 import java.util.concurrent.atomic.AtomicReference
-import android.location.*
 import android.view.*
 import com.atitto.easyweather.databinding.ItemCityBinding
 import android.view.MenuInflater
 import com.atitto.easyweather.MainActivity
+import com.google.android.gms.location.*
 
 class MainFragment : Fragment() {
 
@@ -47,7 +47,7 @@ class MainFragment : Fragment() {
     }
 
     private fun checkState() {
-        state.get()?.let { items.loaded(it) }
+        state.get()?.let { items.update(it) }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -98,10 +98,27 @@ class MainFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun initCities() {
         try {
-            val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-            val provider = locationManager?.getBestProvider(Criteria(), false)
-            val location = provider?.let { locationManager.getLastKnownLocation(it) }
-            viewModel.initCities(location)
+            activity?.let {
+
+                val locationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(10 * 1000)
+                    .setFastestInterval(1 * 1000)
+
+                val locationCallback = object: LocationCallback() {
+                    override fun onLocationResult(result: LocationResult?) {
+                        super.onLocationResult(result)
+                        viewModel.initCities(result?.locations?.first())
+                    }
+
+                    override fun onLocationAvailability(p0: LocationAvailability?) {
+                        super.onLocationAvailability(p0)
+                        if(p0?.isLocationAvailable == false) viewModel.initCities(null)
+                    }
+                }
+
+                LocationServices.getFusedLocationProviderClient(it).requestLocationUpdates(locationRequest, locationCallback, null)
+            }
         } catch (e: Exception) {
             viewModel.initCities(null)
         }
