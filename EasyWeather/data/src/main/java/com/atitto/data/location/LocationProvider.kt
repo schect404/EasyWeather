@@ -3,7 +3,6 @@ package com.atitto.data.location
 import android.content.Context
 import android.location.*
 import io.reactivex.Single
-import java.io.IOException
 import java.util.*
 
 interface LocationProvider {
@@ -19,7 +18,7 @@ class LocationProviderImpl(private val context: Context): LocationProvider {
             results = coder.getFromLocation(location.latitude, location.longitude, 1)
             val city = results[0].locality.replace("'","")
             Single.just(city)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Single.just(null)
         }
     }

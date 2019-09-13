@@ -97,10 +97,15 @@ class MainFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun initCities() {
-        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-        val provider = locationManager?.getBestProvider(Criteria(), false)
-        val location = provider?.let { locationManager.getLastKnownLocation(it) }
-        viewModel.initCities(location)
+        try {
+            val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+            val provider = locationManager?.getBestProvider(Criteria(), false)
+            val location = provider?.let { locationManager.getLastKnownLocation(it) }
+            viewModel.initCities(location)
+        } catch (e: Exception) {
+            viewModel.initCities(null)
+        }
+
     }
 
     companion object {
