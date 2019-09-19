@@ -53,10 +53,10 @@ class MapFragment : Fragment() {
 
         fun newInstance(currentCity: City?, cities: List<City>) =
             MapFragment().apply {
-                Bundle().apply {
+                arguments = Bundle().apply {
                     putParcelableArrayList(CITIES_ARGS, ArrayList(cities))
                     putParcelable(CURRENT_CITY_ARGS, currentCity)
-                }.also { arguments = it }
+                }
             }
     }
 
