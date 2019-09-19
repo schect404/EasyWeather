@@ -13,6 +13,7 @@ import com.atitto.easyweather.common.makeAction
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.atomic.AtomicReference
 
 interface MainViewModel {
 
@@ -20,6 +21,7 @@ interface MainViewModel {
     val errorLiveData: LiveData<String>
 
     fun initCities(location: Location?)
+    fun init()
     fun getWeatherDetails(city: City)
     fun showDetails(city: City)
     fun update(city: City)
@@ -27,6 +29,8 @@ interface MainViewModel {
 }
 
 class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel, ViewModel() {
+
+    private val currentCityLocation = AtomicReference<String>(null)
 
     override val cities: MutableLiveData<List<City>> = MutableLiveData()
 
@@ -36,9 +40,16 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
 
     private val compositeDisposable = CompositeDisposable()
 
+    override fun init() {
+        citiesUseCase.requestLocation { initCities(it) }
+    }
+
     override fun initCities(location: Location?) {
         location?.let {
-            compositeDisposable.makeAction(citiesUseCase.getLocation(it), errorLiveData) { initData(it) }
+            compositeDisposable.makeAction(citiesUseCase.getLocation(it), errorLiveData) { if(it != currentCityLocation.get()) {
+                initData(it)
+                currentCityLocation.set(it)
+            } }
         } ?: run { initData(null) }
     }
 
@@ -107,6 +118,7 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+        currentCityLocation.set(null)
     }
 
     private fun <T: Parcelable> List<T>.replace(newValue: T, block: (T) -> Boolean): List<T> {

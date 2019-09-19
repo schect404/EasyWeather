@@ -41,6 +41,8 @@ class CitiesRepositoryImpl(private val defaultProvider: DefaultCitiesProvider,
         }
     }
 
+    override fun requestLocation(callback: (Location?) -> Unit) = locationProvider.requestLocation(callback)
+
     override fun getDBCities(): Single<List<City>> = dao.getAllCities().map { it.map { it.toCity() } }
 
     override fun insertCitiesToDB(cities: List<City>): Completable {

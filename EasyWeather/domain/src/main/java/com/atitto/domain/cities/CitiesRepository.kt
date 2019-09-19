@@ -15,6 +15,7 @@ interface CitiesRepository {
     fun updateDBCity(city: City): Completable
     fun getWeather(city: City): Single<City>
     fun getWeatherDetails(city: City): Single<List<WeatherDetails>>
+    fun requestLocation(callback: (Location?) -> Unit)
     fun getLocation(location: Location): Single<String?>
     fun getCities(prefix: String?): Single<List<SearchCity>>
 }

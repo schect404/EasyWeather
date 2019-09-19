@@ -16,6 +16,7 @@ interface CitiesUseCase {
     fun getWeather(city: City): Single<City>
     fun getWeatherDetails(city: City): Single<List<WeatherDetails>>
     fun getLocation(location: Location): Single<String?>
+    fun requestLocation(callback: (Location?) -> Unit)
     fun searchCity(prefix: String?): Single<List<SearchCity>>
 }
 
@@ -36,6 +37,8 @@ class CitiesUseCaseImpl(private val citiesRepository: CitiesRepository): CitiesU
     override fun getLocation(location: Location) = citiesRepository.getLocation(location)
 
     override fun searchCity(prefix: String?): Single<List<SearchCity>> = citiesRepository.getCities(prefix)
+
+    override fun requestLocation(callback: (Location?) -> Unit) = citiesRepository.requestLocation(callback)
 
     private fun handleMyCities(location: String?, cities: ArrayList<City>): List<City>  {
         location?.let {

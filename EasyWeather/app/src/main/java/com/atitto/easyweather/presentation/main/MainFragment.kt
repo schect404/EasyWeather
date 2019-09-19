@@ -1,7 +1,5 @@
 package com.atitto.easyweather.presentation.main
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.atitto.domain.cities.model.City
@@ -16,8 +14,7 @@ import java.util.concurrent.atomic.AtomicReference
 import android.view.*
 import com.atitto.easyweather.databinding.ItemCityBinding
 import android.view.MenuInflater
-import com.atitto.easyweather.MainActivity
-import com.google.android.gms.location.*
+import com.atitto.easyweather.presentation.navigation.Navigator
 
 class MainFragment : Fragment() {
 
@@ -32,6 +29,8 @@ class MainFragment : Fragment() {
     private val viewModel: MainViewModel = get()
 
     private val permissionManager: PermissionManager = get()
+
+    private val navigator: Navigator = get()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -76,7 +75,7 @@ class MainFragment : Fragment() {
             R.id.action_add -> context?.let { DialogHelper.showAddCityDialog(it, layoutInflater, items, get()) { viewModel.addCity(it, items) } }
             R.id.action_map -> {
                 val myCity = items.firstOrNull { it.isMy }
-                (activity as? MainActivity)?.goToMap(myCity, items)
+                fragmentManager?.let { navigator.goToMap(myCity, items, it) }
             }
             else -> {}
         }
@@ -85,45 +84,12 @@ class MainFragment : Fragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(permissionManager.isLocationPermissionGranted()) {
-            initCities()
-        } else {
-            viewModel.initCities(null)
-        }
+        if(permissionManager.isLocationPermissionGranted()) viewModel.init() else viewModel.initCities(null)
     }
 
     private fun knowLocation() =
-        if (permissionManager.isLocationPermissionGranted()) permissionManager.requestPermission(this) else initCities()
+        if (permissionManager.isLocationPermissionGranted()) permissionManager.requestPermission(this) else viewModel.init()
 
-    @SuppressLint("MissingPermission")
-    private fun initCities() {
-        try {
-            activity?.let {
-
-                val locationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    .setInterval(10 * 1000)
-                    .setFastestInterval(1 * 1000)
-
-                val locationCallback = object: LocationCallback() {
-                    override fun onLocationResult(result: LocationResult?) {
-                        super.onLocationResult(result)
-                        viewModel.initCities(result?.locations?.first())
-                    }
-
-                    override fun onLocationAvailability(p0: LocationAvailability?) {
-                        super.onLocationAvailability(p0)
-                        if(p0?.isLocationAvailable == false) viewModel.initCities(null)
-                    }
-                }
-
-                LocationServices.getFusedLocationProviderClient(it).requestLocationUpdates(locationRequest, locationCallback, null)
-            }
-        } catch (e: Exception) {
-            viewModel.initCities(null)
-        }
-
-    }
 
     companion object {
         fun newInstance() = MainFragment()
