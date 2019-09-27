@@ -3,9 +3,7 @@ package com.atitto.easyweather
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
-import com.atitto.domain.cities.model.City
 import com.atitto.easyweather.presentation.main.MainFragment
-import com.atitto.easyweather.presentation.map.MapFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.*
@@ -15,13 +13,19 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (savedInstanceState == null) {
-            val tr = supportFragmentManager.beginTransaction()
-            supportFragmentManager.addOnBackStackChangedListener(this)
-            tr.replace(R.id.vParent, MainFragment.newInstance())
-            tr.commit()
-        }
+        if (savedInstanceState == null) { initPrimary() }
         shouldDisplayHomeUp()
+        initAds()
+    }
+
+    private fun initPrimary() {
+        val tr = supportFragmentManager.beginTransaction()
+        supportFragmentManager.addOnBackStackChangedListener(this)
+        tr.replace(R.id.vParent, MainFragment.newInstance())
+        tr.commit()
+    }
+
+    private fun initAds() {
         MobileAds.initialize(this, BuildConfig.AD_MOB_KEY)
         adView.loadAd(AdRequest.Builder().addTestDevice("DF57416E00F012FC528E1B25C7F8F6F8").build())
     }

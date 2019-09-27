@@ -11,9 +11,6 @@ import com.atitto.easyweather.presentation.map.widget.MapManager
 import com.google.android.gms.maps.SupportMapFragment
 import org.koin.android.ext.android.get
 
-private const val CITIES_ARGS = "CITIES"
-private const val CURRENT_CITY_ARGS = "CURRENT_CITY"
-
 class MapFragment : Fragment() {
 
     private val cities: ArrayList<City> = ArrayList()
@@ -50,6 +47,9 @@ class MapFragment : Fragment() {
     }
 
     companion object {
+
+        private const val CITIES_ARGS = "CITIES"
+        private const val CURRENT_CITY_ARGS = "CURRENT_CITY"
 
         fun newInstance(currentCity: City?, cities: List<City>) =
             MapFragment().apply {

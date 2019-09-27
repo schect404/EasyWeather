@@ -23,7 +23,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/ad_weather_block_id">
-    </com.google.android.gms.ads.AdView>
+            ads:adUnitId="@string/ad_weather_block_id"/>
 
 </android.support.constraint.ConstraintLayout>
