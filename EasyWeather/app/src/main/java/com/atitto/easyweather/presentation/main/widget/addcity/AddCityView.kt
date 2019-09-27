@@ -56,7 +56,7 @@ class AddCityView @JvmOverloads constructor(
 
     private fun bindSearch() {
         val searchView: EditText = findViewById(R.id.etCity)
-        searchView.addTextChangedListener(object: TextWatcher{
+        searchView.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -67,22 +67,12 @@ class AddCityView @JvmOverloads constructor(
         })
     }
 
-    private fun subscribeSearch() {
-        compositeDisposable.makeAction(searchData.debounce(200, TimeUnit.MILLISECONDS), {}) {
-            search(it)
-        }
-    }
+    private fun subscribeSearch() = compositeDisposable.makeAction(searchData.debounce(500, TimeUnit.MILLISECONDS), {}) { search(it) }
 
-    private fun search(prefix: String?) {
-        useCase?.let {
-            compositeDisposable.makeAction(it.searchCity(prefix), {}) {
-                items.update(it)
-            }
-        }
-    }
 
-    fun dispose() {
-        compositeDisposable.dispose()
-    }
+    private fun search(prefix: String?) = useCase?.let { compositeDisposable.makeAction(it.searchCity(prefix), {}) { items.update(it) } }
+
+    fun dispose() = compositeDisposable.dispose()
+
 
 }

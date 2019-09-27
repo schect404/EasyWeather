@@ -29,22 +29,22 @@ class MapManagerImpl(private val context: Context): MapManager {
 
     private var map = AtomicReference<GoogleMap>(null)
 
-    private fun attachMap(map: GoogleMap) {
-        this.map.set(map)
-    }
+    private fun attachMap(map: GoogleMap) = this.map.set(map)
 
-    override fun releaseMap() {
-        map.set(null)
-    }
+    override fun releaseMap() = map.set(null)
 
     override fun initMap(mapFragment: SupportMapFragment, callback: () -> Unit) =
         mapFragment.getMapAsync {
             it.apply {
                 mapType = GoogleMap.MAP_TYPE_NORMAL
                 clear()
-            }.also {
-                attachMap(it)
+            }.also { map ->
+                attachMap(map)
                 callback.invoke()
+                mapFragment.context?.let {
+                    val markerWindowAdapter = CustomMarkerInfoView(it)
+                    map.setInfoWindowAdapter(markerWindowAdapter)
+                }
             }
         }
 
@@ -70,6 +70,8 @@ class MapManagerImpl(private val context: Context): MapManager {
 
                 val marker = map.get()?.addMarker(options)
 
+                marker?.tag = city
+
                 Glide.with(context)
                     .asBitmap()
                     .load(city.iconUrl)
@@ -84,8 +86,6 @@ class MapManagerImpl(private val context: Context): MapManager {
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
                     })
-
-                if (city.name == currentCity?.name) marker?.showInfoWindow()
             }
         }
     }
