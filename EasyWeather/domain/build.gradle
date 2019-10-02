@@ -37,6 +37,9 @@ dependencies {
 
     implementation support.appcompat
 
+    implementation google.firebase
+    implementation google.crashlytics
+
     implementation koin.koin
 
     implementation rx.android

@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">EasyWeather</string>
+    <string name="app_name" translatable="false">EasyWeather</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="ad_weather_block_id">ca-app-pub-9971106785648453/1293103472</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="new_city_hint">Begin to write city name…</string>
+    <string name="delete_city_title">Do you really want to remove this city?</string>
+    <string name="ad_weather_block_id" translatable="false">ca-app-pub-9971106785648453/1293103472</string>
 </resources>

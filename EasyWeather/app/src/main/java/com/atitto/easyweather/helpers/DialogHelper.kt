@@ -16,6 +16,16 @@ object DialogHelper {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
+    fun showDeleteAlert(context: Context, onRemove: () -> Unit) {
+        AlertDialog
+            .Builder(context)
+            .setTitle(R.string.delete_city_title)
+            .setNegativeButton(android.R.string.cancel) {_,_ -> }
+            .setPositiveButton(android.R.string.ok) { _, _ -> onRemove.invoke() }
+            .create()
+            .show()
+    }
+
     fun showAddCityDialog(context: Context, layoutInflater: LayoutInflater, cities: List<City>, useCase: CitiesUseCase, listener: (String) -> Unit ) {
 
         val view = layoutInflater.inflate(R.layout.dialog_add_city, null) as? AddCityView
@@ -26,7 +36,6 @@ object DialogHelper {
 
         val dialog = AlertDialog
             .Builder(context)
-            .setTitle("New City")
             .setView(view)
             .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.cancel() }
             .setOnDismissListener { view?.dispose() }

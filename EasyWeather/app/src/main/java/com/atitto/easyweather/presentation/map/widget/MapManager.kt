@@ -4,16 +4,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.atitto.domain.cities.model.City
+import com.atitto.easyweather.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import java.util.concurrent.atomic.AtomicReference
 
 interface MapManager {
@@ -37,6 +35,7 @@ class MapManagerImpl(private val context: Context): MapManager {
         mapFragment.getMapAsync {
             it.apply {
                 mapType = GoogleMap.MAP_TYPE_NORMAL
+                setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map))
                 clear()
             }.also { map ->
                 attachMap(map)

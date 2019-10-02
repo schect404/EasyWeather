@@ -50,6 +50,8 @@ dependencies {
     kapt room.compiler
 
     implementation google.services
+    implementation google.firebase
+    implementation google.crashlytics
 
     implementation okhttp.logging
     implementation okhttp.gson

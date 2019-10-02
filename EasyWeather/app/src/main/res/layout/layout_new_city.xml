@@ -16,7 +16,7 @@
                 android:id="@+id/etCity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Write city name"/>
+                android:hint="@string/new_city_hint"/>
 
     </android.support.design.widget.TextInputLayout>
 

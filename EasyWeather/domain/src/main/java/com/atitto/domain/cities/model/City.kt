@@ -10,8 +10,10 @@ data class City (
    val isMy: Boolean = false,
    val coords: Coords? = null,
    val iconUrl: String? = null,
+   val dailyDetails: List<WeatherDailyDetails>? = null,
+   val dailyExpanded: Boolean = false,
    val details: List<WeatherDetails>? = null,
-   val shouldDetailsBeSeen: Boolean = false
+   val expandedDetails: Boolean = false
 ): Parcelable {
 
    fun isCoordsEnabled() = coords != null
@@ -21,8 +23,8 @@ data class City (
       .or(coords != another.coords)
       .or(iconUrl != another.iconUrl)
       .or(isMy != another.isMy)
-      .or(shouldDetailsBeSeen != another.shouldDetailsBeSeen)
-      .or( details != another.details)
+      .or(dailyExpanded != another.dailyExpanded)
+      .or( dailyDetails != another.dailyDetails)
 
 }
 

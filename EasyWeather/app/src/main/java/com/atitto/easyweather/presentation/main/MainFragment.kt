@@ -2,6 +2,7 @@ package com.atitto.easyweather.presentation.main
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.helper.ItemTouchHelper
 import com.atitto.domain.cities.model.City
 import com.atitto.easyweather.BR
 import com.atitto.easyweather.R
@@ -12,17 +13,24 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.get
 import java.util.concurrent.atomic.AtomicReference
 import android.view.*
-import com.atitto.easyweather.databinding.ItemCityBinding
 import android.view.MenuInflater
+import com.atitto.easyweather.databinding.ItemCityBinding
 import com.atitto.easyweather.presentation.navigation.Navigator
+import kotlinx.android.synthetic.main.item_city.view.*
 
 class MainFragment : Fragment() {
 
     private val items: AsyncObservableList<City> = AsyncObservableList()
 
-    private val adapter = LastAdapter(items, BR.item).map<City, ItemCityBinding>(R.layout.item_city) { onClick {
-        it.binding.item?.let { city -> viewModel.showDetails(city) }
-    } }
+    private val adapter = LastAdapter(items, BR.item).map<City, ItemCityBinding>(R.layout.item_city) {
+        onClick { it.binding.item?.let { city -> viewModel.showDetails(city) } }
+        onBind { holder ->
+            holder.binding.item?.let { city ->
+                holder.itemView.vWeatherDailyDetails.onClick = { viewModel.onDailyClicked(city, it) }
+                holder.itemView.ivRemove.setOnClickListener { context?.let { DialogHelper.showDeleteAlert(it) { viewModel.onCityDeleted(city) } }  }
+            }
+        }
+    }
 
     private val state = AtomicReference<List<City>>()
 
@@ -57,10 +65,18 @@ class MainFragment : Fragment() {
     private fun setupList() {
         rvCities.attachAdapter(adapter)
         rvCities.scheduleLayoutAnimation()
+//        rvCities.isNestedScrollingEnabled = true
+//        val icon = context?.getDrawable(R.drawable.ic_delete)
+//        icon?.let {
+//            ItemTouchHelper(SwipeToDeleteCallback({ viewModel.onCityDeleted(items[it]) }, it) ). .attachToRecyclerView(rvCities)
+//        }
     }
 
     private fun bindViewModel() {
-        bindDataTo(viewModel.cities) { items.update(it) }
+        bindDataTo(viewModel.cities) {
+            pbCities.visibility = View.GONE
+            items.update(it)
+        }
         bindDataTo(viewModel.errorLiveData) { error -> context?.let { DialogHelper.showErrorAlert(it, error) } }
     }
 

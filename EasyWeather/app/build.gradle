@@ -8,6 +8,8 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'com.google.gms.google-services'
 
+apply plugin: 'io.fabric'
+
 android {
     compileSdkVersion build_versions.compile_sdk
     dataBinding.enabled true
@@ -23,6 +25,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -50,6 +53,7 @@ dependencies {
     implementation google.ads
     implementation google.firebase
     implementation google.firebaseAds
+    implementation google.crashlytics
 
     implementation glide.glide
 

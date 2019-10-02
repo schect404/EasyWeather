@@ -1,0 +1,4 @@
+<resources>
+    <string name="new_city_hint">Fingen an, die Ort zu schreiben…</string>
+    <string name="delete_city_title">Wollen Sie wirklich dies Ort löschen?</string>
+</resources>

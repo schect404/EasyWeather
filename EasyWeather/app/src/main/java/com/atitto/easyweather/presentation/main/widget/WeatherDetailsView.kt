@@ -9,6 +9,7 @@ import android.widget.RelativeLayout
 import com.atitto.domain.cities.model.WeatherDetails
 import com.atitto.easyweather.BR
 import com.atitto.easyweather.R
+import com.atitto.easyweather.common.AsyncObservableList
 import com.atitto.easyweather.common.attachAdapter
 import com.atitto.easyweather.common.loaded
 import com.github.nitrico.lastadapter.LastAdapter
@@ -26,7 +27,7 @@ class WeatherDetailsView @JvmOverloads constructor(
     init {
         inflate(context, R.layout.layout_weather_details, this)
 
-        val list: RecyclerView = findViewById(R.id.rvWeather)
+        val list: RecyclerView = findViewById(R.id.rvWeatherDetails)
         list.attachAdapter(adapter)
     }
 

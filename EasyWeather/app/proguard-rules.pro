@@ -19,3 +19,37 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn okhttp3.**
+-keep class okhttp3.** { *; }
+
+-keepclassmembers class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator CREATOR;
+}
+# kotlin>
+
+# <coroutines
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+-keep class android.support.** { *; }
+
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+
+-keep class com.google.gson.** { *; }
+# gson>
+
+# uncomment when add smth new
+# <retrofit
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+# retrofit>
+
+-keepattributes LineNumberTable
+-keepattributes SourceFile
+-keepattributes Signature
+-keepattributes *Annotation*

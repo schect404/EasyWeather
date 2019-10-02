@@ -1,0 +1,4 @@
+<resources>
+    <string name="new_city_hint">Почніть писати назву міста…</string>
+    <string name="delete_city_title">Ви дійсно хочете видалити це місто?</string>
+</resources>

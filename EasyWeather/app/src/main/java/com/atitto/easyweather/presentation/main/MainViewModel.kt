@@ -8,6 +8,7 @@ import android.os.Parcelable
 import com.atitto.domain.cities.CitiesRepository
 import com.atitto.domain.cities.CitiesUseCase
 import com.atitto.domain.cities.model.City
+import com.atitto.domain.cities.model.WeatherDailyDetails
 import com.atitto.domain.cities.model.WeatherDetails
 import com.atitto.easyweather.common.makeAction
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,6 +27,8 @@ interface MainViewModel {
     fun showDetails(city: City)
     fun update(city: City)
     fun addCity(city: String, currentCities: List<City>)
+    fun onDailyClicked(cityClicked: City, daily: WeatherDailyDetails)
+    fun onCityDeleted(city: City)
 }
 
 class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel, ViewModel() {
@@ -36,13 +39,11 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
 
     override val errorLiveData: MutableLiveData<String> = MutableLiveData()
 
-    private val weatherDetails: HashMap<String, List<WeatherDetails>> = HashMap()
+    private val weatherDetails: HashMap<String, List<WeatherDailyDetails>> = HashMap()
 
     private val compositeDisposable = CompositeDisposable()
 
-    override fun init() {
-        citiesUseCase.requestLocation { initCities(it) }
-    }
+    override fun init() = citiesUseCase.requestLocation { initCities(it) }
 
     override fun initCities(location: Location?) {
         location?.let {
@@ -54,7 +55,7 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
     }
 
     private fun initData(defaultCity: String?) {
-        compositeDisposable.makeAction(citiesUseCase.getDBCities(defaultCity), errorLiveData) { handleCitiesFromDB(it, defaultCity) }
+        compositeDisposable.makeAction(citiesUseCase.getDBCities(defaultCity) { citiesToDB(listOf(it)) }, errorLiveData) { handleCitiesFromDB(it, defaultCity) }
     }
 
     private fun handleCitiesFromDB(citiesFromDB: List<City>, location: String?) {
@@ -96,7 +97,7 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
 
     override fun showDetails(city: City) {
         val details = weatherDetails[city.name] ?: return
-        update(city.copy(details = details, shouldDetailsBeSeen = !city.shouldDetailsBeSeen))
+        update(city.copy(dailyDetails = details, dailyExpanded = !city.dailyExpanded, expandedDetails = if(!city.dailyExpanded) city.expandedDetails else !city.dailyExpanded))
     }
 
     private fun updateCity(city: City) {
@@ -104,15 +105,44 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
     }
 
     override fun getWeatherDetails(city: City) {
-        compositeDisposable.makeAction(citiesUseCase.getWeatherDetails(city), { errorLiveData.postValue("Could not load weather for ${city.name}") }) {
-            val newCity = city.copy(details = it)
-            newCity.details?.let { weatherDetails[city.name] = it }
+        compositeDisposable.makeAction(citiesUseCase.getWeatherDetails(city), { errorLiveData.postValue("Could not load weather for ${city.name}") } ) {
+            val newCity = city.copy(dailyDetails = it)
+            newCity.dailyDetails?.let { weatherDetails[city.name] = it }
+        }
+    }
+
+    override fun onDailyClicked(cityClicked: City, daily: WeatherDailyDetails) {
+        val data = cities.value ?: return
+        update(cityClicked.copy(expandedDetails = false))
+        data.forEach { city ->
+            if(city.name == cityClicked.name) {
+                val details = city.dailyDetails?.map {
+                    when {
+                        it.date == daily.date -> it.copy(isExpanded = !it.isExpanded)
+                        it.isExpanded -> it.copy(isExpanded = false)
+                        else -> it
+                    }
+                }
+                val actualDetails = details?.firstOrNull { it.isExpanded }?.details
+                update(city.copy(dailyDetails = details, details = actualDetails, expandedDetails = actualDetails.isNullOrEmpty().not()))
+            }
         }
     }
 
     override fun update(city: City) {
         val data = cities.value ?: return
         cities.value = data.replace(city) { (it.name == city.name).and(it.isChanged(city)) }
+    }
+
+    override fun onCityDeleted(city: City) {
+        compositeDisposable.makeAction(citiesUseCase.deleteCity(city), errorLiveData) {}
+        deleteCity(city)
+    }
+
+    private fun deleteCity(city: City) {
+        val items = cities.value ?: return
+        val updated = items.firstOrNull { it.name == city.name } ?: return
+        cities.postValue(items - updated)
     }
 
     override fun onCleared() {

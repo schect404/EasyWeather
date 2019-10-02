@@ -36,6 +36,8 @@ google.services = "com.google.android.gms:play-services:$versions.google"
 google.ads = "com.google.android.gms:play-services-ads:$versions.google"
 google.firebase = "com.google.firebase:firebase-analytics:$versions.google"
 google.firebaseAds = "com.google.firebase:firebase-ads:$versions.google"
+google.crashlytics = 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+
 ext.google = google
 //endregion
 

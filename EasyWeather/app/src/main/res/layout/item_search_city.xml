@@ -11,7 +11,7 @@
 
         <RelativeLayout
                 android:id="@+id/vMain"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/standartPadding"
                 android:paddingEnd="@dimen/standartPadding"
@@ -26,8 +26,7 @@
                     android:textAppearance="@style/TextAccentAppearenceMiddle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@id/ivIcon"/>
+                    android:layout_alignParentStart="true"/>
 
         </RelativeLayout>
 

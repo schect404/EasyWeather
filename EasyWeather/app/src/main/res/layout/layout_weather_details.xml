@@ -7,7 +7,7 @@
         android:padding="@dimen/standartPadding">
 
     <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvWeather"
+            android:id="@+id/rvWeatherDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

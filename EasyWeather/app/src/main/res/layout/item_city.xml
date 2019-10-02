@@ -39,6 +39,7 @@
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     app:icon="@{item.iconUrl}"
+                    android:padding="@dimen/smallMargin"
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@id/tvTemperature"/>
 
@@ -47,19 +48,36 @@
                     android:layout_marginTop="@dimen/standartMargin"
                     android:textAppearance="@style/TextLabelAppearenceMiddle"
                     android:text="@{item.temperature}"
-                    android:layout_alignParentEnd="true"
+                    android:layout_toStartOf="@id/ivRemove"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
+            <ImageView
+                    android:id="@+id/ivRemove"
+                    android:padding="@dimen/smallMargin"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_delete"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"/>
+
         </RelativeLayout>
+
+        <com.atitto.easyweather.presentation.main.widget.daily.WeatherDailyDetailsView
+                android:id="@+id/vWeatherDailyDetails"
+                app:dailyDetails="@{item.dailyDetails}"
+                app:dailyVisible="@{item.dailyExpanded}"
+                android:layout_below="@id/vMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         <com.atitto.easyweather.presentation.main.widget.WeatherDetailsView
                 android:id="@+id/vWeatherDetails"
                 app:details="@{item.details}"
-                app:visible="@{item.shouldDetailsBeSeen}"
-                android:layout_below="@id/vMain"
+                app:visible="@{item.expandedDetails}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vWeatherDailyDetails"/>
 
     </RelativeLayout>
 
