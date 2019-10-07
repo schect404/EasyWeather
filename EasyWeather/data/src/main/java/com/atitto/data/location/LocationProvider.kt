@@ -64,9 +64,9 @@ class LocationProviderImpl(private val context: Context): LocationProvider {
                     }
                 }
             }
-            Single.just(null)
+            Single.just("")
         } catch (e: Exception) {
-            Single.just(null)
+            Single.just("")
         }
     }
 
