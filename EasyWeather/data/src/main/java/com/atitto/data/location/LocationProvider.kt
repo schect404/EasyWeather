@@ -66,7 +66,7 @@ class LocationProviderImpl(private val context: Context): LocationProvider {
             }
             Single.just("")
         } catch (e: Exception) {
-            Single.just("")
+            Single.error(java.lang.Exception("Could not find city"))
         }
     }
 

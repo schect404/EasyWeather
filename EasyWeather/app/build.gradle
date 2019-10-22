@@ -17,8 +17,8 @@ android {
         applicationId "com.atitto.easyweather"
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "AD_MOB_KEY", '"ca-app-pub-9971106785648453~2570526121"'
     }
