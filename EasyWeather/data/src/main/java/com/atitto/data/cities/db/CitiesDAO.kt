@@ -1,6 +1,7 @@
 package com.atitto.data.cities.db
 
-import android.arch.persistence.room.*
+import androidx.room.*
+import io.reactivex.Completable
 import io.reactivex.Single
 
 @Dao
@@ -10,12 +11,12 @@ interface CitiesDAO {
     fun getAllCities(): Single<List<CityDB>>
 
     @Insert
-    fun insertAll(cities: List<CityDB>)
+    fun insertAll(cities: List<CityDB>): Completable
 
     @Update
-    fun updateCity(city: CityDB)
+    fun updateCity(city: CityDB): Completable
 
     @Delete
-    fun deleteCity(city: CityDB)
+    fun deleteCity(city: CityDB): Completable
 
 }

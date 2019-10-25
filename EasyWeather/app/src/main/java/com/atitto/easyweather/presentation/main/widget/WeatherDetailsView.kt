@@ -1,9 +1,9 @@
 package com.atitto.easyweather.presentation.main.widget
 
 import android.content.Context
-import android.databinding.ObservableArrayList
-import android.databinding.ObservableList
-import android.support.v7.widget.RecyclerView
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableList
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.widget.RelativeLayout
 import com.atitto.domain.cities.model.WeatherDetails

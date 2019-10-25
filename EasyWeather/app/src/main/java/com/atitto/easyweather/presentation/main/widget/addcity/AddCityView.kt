@@ -1,7 +1,7 @@
 package com.atitto.easyweather.presentation.main.widget.addcity
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet

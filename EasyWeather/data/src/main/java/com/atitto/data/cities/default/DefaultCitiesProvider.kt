@@ -1,7 +1,7 @@
 package com.atitto.data.cities.default
 
 import android.content.Context
-import android.support.annotation.RawRes
+import androidx.annotation.RawRes
 import com.atitto.data.R
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName

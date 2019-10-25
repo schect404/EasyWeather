@@ -1,7 +1,7 @@
 package com.atitto.data.cities.db
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.atitto.domain.cities.model.City
 import com.atitto.domain.cities.model.Coords
 

@@ -34,36 +34,15 @@ class CitiesRepositoryImpl(private val defaultProvider: DefaultCitiesProvider,
 
     override fun getDefaultCities(): List<City> = defaultProvider.getCities().map { City(name = it) }
 
-    override fun updateDBCity(city: City): Completable {
-        return try {
-            dao.updateCity(city.toDBCity())
-            Completable.complete()
-        } catch (e: Exception) {
-            Completable.error(e)
-        }
-    }
+    override fun updateDBCity(city: City) = dao.updateCity(city.toDBCity())
 
     override fun requestLocation(callback: (Location?) -> Unit) = locationProvider.requestLocation(callback)
 
     override fun getDBCities(): Single<List<City>> = dao.getAllCities().map { it.map { it.toCity() } }
 
-    override fun deleteCity(city: City): Completable {
-        return try {
-            dao.deleteCity(city.toDBCity())
-            Completable.complete()
-        } catch (e: Exception) {
-            Completable.error(e)
-        }
-    }
+    override fun deleteCity(city: City): Completable  = dao.deleteCity(city.toDBCity())
 
-    override fun insertCitiesToDB(cities: List<City>): Completable {
-        return try {
-            dao.insertAll(cities.map { it.toDBCity() })
-            Completable.complete()
-        } catch (e: Exception) {
-            Completable.error(e)
-        }
-    }
+    override fun insertCitiesToDB(cities: List<City>) = dao.insertAll(cities.map { it.toDBCity() })
 
     override fun getCities(prefix: String?): Single<List<SearchCity>> = citiesApi.getCities(prefix).map { it.toSearchCities() }
 }

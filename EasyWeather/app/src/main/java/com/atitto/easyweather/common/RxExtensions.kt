@@ -1,6 +1,6 @@
 package com.atitto.easyweather.common
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable

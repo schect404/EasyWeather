@@ -1,6 +1,6 @@
 package com.atitto.easyweather.presentation.navigation
 
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 import com.atitto.domain.cities.model.City
 import com.atitto.easyweather.R
 import com.atitto.easyweather.presentation.map.MapFragment

@@ -1,8 +1,8 @@
 package com.atitto.easyweather
 
 import android.os.Bundle
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AppCompatActivity
 import com.atitto.easyweather.presentation.main.MainFragment
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.ads.AdRequest

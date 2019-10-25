@@ -14,7 +14,7 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "API_KEY", '"b7e3ab34f225f849bf5abf21bb0aad94"'
         buildConfigField "String", "CITIES_API_KEY", '"56272388b4msh3d4429db9b934b0p12c004jsn58e4cdcb162a"'
         buildConfigField "String", "BASE_URL_WEATHER", '"http://api.openweathermap.org/"'
@@ -55,8 +55,8 @@ dependencies {
     implementation okhttp.logging
     implementation okhttp.gson
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 }

@@ -1,8 +1,8 @@
 package com.atitto.easyweather.presentation.main
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.atitto.domain.cities.model.City
 import com.atitto.easyweather.BR
 import com.atitto.easyweather.R

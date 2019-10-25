@@ -1,8 +1,8 @@
 package com.atitto.easyweather.presentation.main
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import android.location.Location
 import android.os.Parcelable
 import com.atitto.domain.cities.CitiesRepository
@@ -47,10 +47,11 @@ class MainViewModelImpl(private val citiesUseCase: CitiesUseCase): MainViewModel
 
     override fun initCities(location: Location?) {
         location?.let {
-            compositeDisposable.makeAction(citiesUseCase.getLocation(it), errorLiveData) { if(it != currentCityLocation.get()) {
-                initData(it)
-                currentCityLocation.set(it)
-            } }
+            compositeDisposable.makeAction(citiesUseCase.getLocation(it), { initData(null) }) {
+                if(it != currentCityLocation.get()) {
+                    initData(it)
+                    currentCityLocation.set(it)
+                } }
         } ?: run { initData(null) }
     }
 

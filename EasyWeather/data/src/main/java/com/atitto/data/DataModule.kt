@@ -1,6 +1,6 @@
 package com.atitto.data
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import com.atitto.data.cities.CitiesRepositoryImpl
 import com.atitto.data.cities.api.WeatherApi
 import com.atitto.data.cities.db.WeatherDB
@@ -27,7 +27,7 @@ val dataModule = module {
     single("weather") { get<RetrofitFactory>().createRetrofit(get(), get(), RetrofitVariants.WEATHER) }
     single("cities") { get<RetrofitFactory>().createRetrofit(get(), get(), RetrofitVariants.CITIES) }
     single<DefaultCitiesProvider> { DefaultCitiesProviderImpl(get(), get()) }
-    single { Room.databaseBuilder(androidApplication(), WeatherDB::class.java, "weather-db").allowMainThreadQueries().build() }
+    single { Room.databaseBuilder(androidApplication(), WeatherDB::class.java, "weather-db").build() }
     single { get<Retrofit>("weather").create(WeatherApi::class.java) }
     single { get<Retrofit>("cities").create(SearchCitiesApi::class.java)}
     single<LocationProvider> { LocationProviderImpl(get()) }
